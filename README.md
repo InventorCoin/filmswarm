@@ -2,9 +2,9 @@
 
 > **Gemini Live Agent Challenge** - Creative Storyteller Category
 
-FilmSwarm is a multi-agent AI system that generates complete film pre-production packages. A Director agent dynamically spawns specialized agents based on your story content, agents deliberate visibly through roundtable discussions, and 10-40 concept art images are generated in real-time.
+FilmSwarm is a multi-agent AI system that generates complete film pre-production packages. A Director agent dynamically spawns specialized agents based on your story content, agents deliberate visibly through roundtable discussions, and ~13 concept art images are generated in real-time.
 
-**Live Demo:** [filmswarm.web.app](https://filmswarm.web.app)
+**Live Demo:** [filmswarm-591339435677.us-central1.run.app](https://filmswarm-591339435677.us-central1.run.app)
 
 ## How It Works
 
@@ -83,7 +83,7 @@ graph TD
 
 - **Dynamic agent spawning**: Agents are created at runtime based on story content (3 characters = 3 CharacterDesigner agents)
 - **Visible deliberation**: Roundtable discussions where agents debate creative decisions in real-time
-- **Interleaved text + images**: 10-40 concept art images generated alongside rich text descriptions
+- **Interleaved text + images**: ~13 concept art images generated alongside rich text descriptions
 - **SSE streaming**: Every event streamed to the frontend for live visualization
 
 ## Tech Stack

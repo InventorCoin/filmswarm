@@ -14,15 +14,16 @@ export function PhaseIndicator() {
 
   if (status === 'idle' || !currentPhase) return null;
 
-  const currentIdx = PHASES.findIndex((p) => p.key === currentPhase);
+  const isCompleted = status === 'completed';
+  const currentIdx = isCompleted ? PHASES.length : PHASES.findIndex((p) => p.key === currentPhase);
 
   return (
     <div className="bg-swarm-surface border border-swarm-border rounded-xl p-4">
       <div className="flex items-center justify-between">
         {PHASES.map((phase, i) => {
-          const isPast = i < currentIdx;
-          const isCurrent = i === currentIdx;
-          const isFuture = i > currentIdx;
+          const isPast = isCompleted || i < currentIdx;
+          const isCurrent = !isCompleted && i === currentIdx;
+          const isFuture = !isCompleted && i > currentIdx;
 
           return (
             <div key={phase.key} className="flex items-center flex-1">
