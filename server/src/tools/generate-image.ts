@@ -4,6 +4,22 @@ import { getGenAI, MODELS } from '../config/gemini.js';
 import { getBucket } from '../config/firebase.js';
 import { eventBus } from '../pipeline/event-bus.js';
 
+// Per-agent image generation limits (enforced at tool level)
+const agentCallCounts = new Map<string, number>();
+const AGENT_IMAGE_LIMITS: Record<string, number> = {
+  MoodCurator: 2,
+  Cinematographer: 2,
+};
+const DEFAULT_IMAGE_LIMIT = 1; // CharacterDesigner_*, WorldBuilder_*
+
+function getImageLimit(agentName: string): number {
+  return AGENT_IMAGE_LIMITS[agentName] ?? DEFAULT_IMAGE_LIMIT;
+}
+
+export function resetImageCounts() {
+  agentCallCounts.clear();
+}
+
 async function executeGenerateImage(
   input: { prompt: string; label: string },
   toolContext?: ToolContext
@@ -11,6 +27,15 @@ async function executeGenerateImage(
   const { prompt, label } = input;
   const projectId = (toolContext?.state?.get?.('projectId') ?? 'unknown') as string;
   const agentName = toolContext?.agentName ?? 'unknown';
+
+  // Enforce per-agent image limit
+  const callCount = agentCallCounts.get(agentName) ?? 0;
+  const limit = getImageLimit(agentName);
+  if (callCount >= limit) {
+    console.log(`[generate_image] BLOCKED: ${agentName} already generated ${callCount}/${limit} images`);
+    return { url: '', description: `[Image limit reached: ${agentName} has already generated ${limit} image(s). Proceed with text output.]` };
+  }
+  agentCallCounts.set(agentName, callCount + 1);
 
   eventBus.emit(projectId, { type: 'tool_call', agent: agentName, tool: 'generate_image' });
 
