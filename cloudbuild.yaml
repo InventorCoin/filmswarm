@@ -30,7 +30,7 @@ steps:
       - '--set-env-vars'
       - 'GOOGLE_CLOUD_PROJECT=$PROJECT_ID,GCS_BUCKET=filmswarm-images,NODE_ENV=production,CLIENT_URL=*'
       - '--set-secrets'
-      - 'GOOGLE_API_KEY=filmswarm-gemini-key:latest'
+      - 'GOOGLE_API_KEY=filmswarm-gemini-key:latest,GOOGLE_GENAI_API_KEY=filmswarm-gemini-key:latest'
       - '--memory'
       - '1Gi'
       - '--timeout'

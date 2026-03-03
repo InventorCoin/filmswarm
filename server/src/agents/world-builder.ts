@@ -1,6 +1,7 @@
 import { LlmAgent } from '@google/adk';
 import { MODELS } from '../config/gemini.js';
 import { generateImageTool } from '../tools/generate-image.js';
+import { sanitizeAgentName } from './utils.js';
 
 export function createWorldBuilder(location: {
   name: string;
@@ -9,7 +10,7 @@ export function createWorldBuilder(location: {
   visualNotes: string;
 }) {
   return new LlmAgent({
-    name: `WorldBuilder_${location.name.replace(/\s+/g, '_')}`,
+    name: `WorldBuilder_${sanitizeAgentName(location.name)}`,
     model: MODELS.REASONING,
     instruction: `You are a world builder / production designer for film pre-production. Design the following location:
 
@@ -33,6 +34,6 @@ For each image prompt, be EXTREMELY detailed about:
 
 Output your location design as text, referencing the generated images.`,
     tools: [generateImageTool],
-    outputKey: `location_${location.name.replace(/\s+/g, '_')}`,
+    outputKey: `location_${sanitizeAgentName(location.name)}`,
   });
 }

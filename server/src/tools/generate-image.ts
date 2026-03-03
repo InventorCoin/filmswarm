@@ -16,46 +16,64 @@ async function executeGenerateImage(
 
   const genai = getGenAI();
 
-  const response = await genai.models.generateContent({
-    model: MODELS.IMAGE,
-    contents: [
-      {
-        role: 'user',
-        parts: [
-          {
-            text: `Generate a cinematic, high-quality concept art image for film pre-production. ${prompt}`,
-          },
-        ],
+  console.log(`[generate_image] Starting for "${label}" by ${agentName} (project: ${projectId})`);
+
+  let response: any;
+  try {
+    response = await genai.models.generateContent({
+      model: MODELS.IMAGE,
+      contents: [
+        {
+          role: 'user',
+          parts: [
+            {
+              text: `Generate a cinematic, high-quality concept art image for film pre-production. ${prompt}`,
+            },
+          ],
+        },
+      ],
+      config: {
+        responseModalities: ['TEXT', 'IMAGE'],
       },
-    ],
-    config: {
-      responseModalities: ['TEXT', 'IMAGE'],
-    },
-  });
+    });
+  } catch (err: any) {
+    console.error(`[generate_image] API error for "${label}":`, err.message ?? err);
+    return { url: '', description: `[Image generation failed for: ${label}] ${err.message ?? ''}` };
+  }
 
   const parts = response.candidates?.[0]?.content?.parts ?? [];
   const imagePart = parts.find((p: any) => p.inlineData);
+
+  console.log(`[generate_image] Response for "${label}": ${parts.length} parts, hasImage=${!!imagePart?.inlineData?.data}`);
 
   if (!imagePart?.inlineData?.data) {
     return { url: '', description: `[Image generation failed for: ${label}]` };
   }
 
   // Upload to GCS
-  const imageId = uuid();
-  const fileName = `filmswarm/${projectId}/${imageId}.png`;
-  const bucket = getBucket();
-  const file = bucket.file(fileName);
+  let url: string;
+  try {
+    const imageId = uuid();
+    const fileName = `filmswarm/${projectId}/${imageId}.png`;
+    const bucket = getBucket();
+    const file = bucket.file(fileName);
 
-  const buffer = Buffer.from(imagePart.inlineData.data as string, 'base64');
-  await file.save(buffer, {
-    metadata: {
-      contentType: (imagePart.inlineData.mimeType as string) || 'image/png',
-      metadata: { projectId, agent: agentName, label },
-    },
-  });
+    const buffer = Buffer.from(imagePart.inlineData.data as string, 'base64');
+    await file.save(buffer, {
+      metadata: {
+        contentType: (imagePart.inlineData.mimeType as string) || 'image/png',
+        metadata: { projectId, agent: agentName, label },
+      },
+    });
 
-  await file.makePublic();
-  const url = `https://storage.googleapis.com/${bucket.name}/${fileName}`;
+    // Bucket has uniform bucket-level public access — no per-object ACL needed
+    url = `https://storage.googleapis.com/${bucket.name}/${fileName}`;
+    console.log(`[generate_image] Uploaded "${label}" to ${url}`);
+  } catch (err: any) {
+    console.error(`[generate_image] GCS upload error for "${label}":`, err.message ?? err);
+    // Return without URL but don't crash the agent
+    return { url: '', description: `[Image generated but upload failed for: ${label}]` };
+  }
 
   const textPart = parts.find((p: any) => p.text);
   const description = (textPart as any)?.text || label;

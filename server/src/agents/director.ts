@@ -12,6 +12,19 @@ import { createQualityReviewer } from './quality-reviewer.js';
 import { runRoundtable } from './roundtable.js';
 import type { InteractionMode, StoryStructure } from '../types.js';
 
+/** Strip markdown code fences from LLM output and parse JSON */
+function parseAgentJson<T>(raw: unknown): T | null {
+  try {
+    if (!raw) return null;
+    let str = typeof raw === 'string' ? raw : JSON.stringify(raw);
+    // Strip markdown code fences
+    str = str.replace(/^```(?:json)?\s*\n?/i, '').replace(/\n?```\s*$/i, '').trim();
+    return JSON.parse(str);
+  } catch {
+    return null;
+  }
+}
+
 /**
  * Director orchestrates the entire pipeline.
  * Not a BaseAgent — it's a plain async function that spawns sub-agents via InMemoryRunner.
@@ -147,13 +160,10 @@ export async function runDirector(
   // ═══════════════════════════════════════════════════════════
   emitStarted('Director', 'creative_production');
 
-  let story: StoryStructure;
-  try {
-    const raw = state['story_structure'];
-    story = typeof raw === 'string' ? JSON.parse(raw) : (raw as StoryStructure);
-  } catch {
-    story = { logline: '', synopsis: '', characters: [], locations: [], keyScenes: [], themes: [] };
-  }
+  const story: StoryStructure = parseAgentJson<StoryStructure>(state['story_structure']) ?? {
+    logline: '', synopsis: '', characters: [], locations: [], keyScenes: [], themes: [],
+  };
+  console.log(`[Director] Story parsed: ${story.characters?.length ?? 0} characters, ${story.locations?.length ?? 0} locations`);
 
   // Dynamically spawn character designers
   const characterAgents = (story.characters ?? []).map((char) => {

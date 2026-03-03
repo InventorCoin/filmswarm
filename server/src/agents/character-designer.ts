@@ -1,6 +1,7 @@
 import { LlmAgent } from '@google/adk';
 import { MODELS } from '../config/gemini.js';
 import { generateImageTool } from '../tools/generate-image.js';
+import { sanitizeAgentName } from './utils.js';
 
 export function createCharacterDesigner(character: {
   name: string;
@@ -9,7 +10,7 @@ export function createCharacterDesigner(character: {
   visualNotes: string;
 }) {
   return new LlmAgent({
-    name: `CharacterDesigner_${character.name.replace(/\s+/g, '_')}`,
+    name: `CharacterDesigner_${sanitizeAgentName(character.name)}`,
     model: MODELS.REASONING,
     instruction: `You are a character designer for film pre-production. Design the following character:
 
@@ -32,6 +33,6 @@ For each image prompt, be EXTREMELY detailed about:
 
 Output your character design as text, referencing the generated images.`,
     tools: [generateImageTool],
-    outputKey: `character_${character.name.replace(/\s+/g, '_')}`,
+    outputKey: `character_${sanitizeAgentName(character.name)}`,
   });
 }
