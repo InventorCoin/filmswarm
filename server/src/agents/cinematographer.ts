@@ -20,13 +20,13 @@ Visual Style Guide:
 ${moodStr}
 
 Tasks:
-1. Create a shot list for 4-6 of the most visually important scenes
-2. For each shot: shot type, camera movement, lens choice, lighting setup
-3. Use generate_image tool to create 3-4 storyboard frames for the most cinematic moments
+1. Create a shot list for 3-4 key scenes (shot type, camera, lens, lighting).
+2. Use generate_image tool EXACTLY TWICE for the 2 most cinematic storyboard frames.
+   - Be detailed about framing, angle, lighting, characters, palette.
 
-For each storyboard image prompt, be detailed about framing, camera angle, lighting, character positioning, and color palette.
+IMPORTANT: Call generate_image exactly 2 times. No more.
 
-Output a detailed shot list with storyboard reference images.`;
+Output a shot list with storyboard references.`;
     },
     tools: [generateImageTool],
     outputKey: 'cinematography',

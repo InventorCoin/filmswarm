@@ -20,15 +20,16 @@ Story Structure:
 ${storyStr}
 
 Tasks:
-1. Define overall color palette (primary, secondary, accent colors with hex codes)
-2. Establish visual tone (lighting style, contrast, saturation)
-3. Reference cinematic influences
-4. Use generate_image tool to create 2-3 mood board images:
-   - Overall film mood/atmosphere
-   - Key emotional contrast
-   - A signature visual moment
+1. Define overall color palette (primary, secondary, accent with hex codes).
+2. Establish visual tone (lighting, contrast, saturation).
+3. Reference cinematic influences.
+4. Use generate_image tool EXACTLY TWICE:
+   - First: The overall film mood/atmosphere
+   - Second: A signature visual moment
 
-Output a comprehensive visual style guide referencing the mood board images.`;
+IMPORTANT: Call generate_image exactly 2 times. No more.
+
+Output a visual style guide referencing the mood board images.`;
     },
     tools: [generateImageTool],
     outputKey: 'mood_board',

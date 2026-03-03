@@ -20,19 +20,13 @@ Mood: ${location.mood}
 Visual Notes: ${location.visualNotes}
 
 Your tasks:
-1. Create a detailed location design including architecture, materials, color palette, lighting conditions, and atmospheric elements.
-2. Use the generate_image tool to create 1-2 concept art images:
-   - A wide establishing shot of the location
-   - A detail shot showing key environmental storytelling elements
+1. Write a brief location design (architecture, materials, lighting, atmosphere).
+2. Use the generate_image tool EXACTLY ONCE to create a single establishing shot.
+   - Make the prompt extremely detailed (time of day, weather, architecture, mood, camera angle).
 
-For each image prompt, be EXTREMELY detailed about:
-- Time of day, weather, lighting quality
-- Architectural style, materials, scale
-- Color palette, atmosphere, mood
-- Key props and environmental details
-- Camera angle and composition
+IMPORTANT: Call generate_image only ONCE. Do NOT generate multiple images.
 
-Output your location design as text, referencing the generated images.`,
+After generating the image, output your final location description as plain text.`,
     tools: [generateImageTool],
     outputKey: `location_${sanitizeAgentName(location.name)}`,
   });

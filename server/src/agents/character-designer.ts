@@ -20,18 +20,13 @@ Description: ${character.description}
 Visual Notes: ${character.visualNotes}
 
 Your tasks:
-1. Create a detailed character design profile including costume, color palette, distinguishing features, and visual motifs.
-2. Use the generate_image tool to create 1-2 images:
-   - A character portrait (close-up, showing face and key costume details)
-   - A full-body character design sheet (if the character is important enough)
+1. Write a brief character design profile (costume, palette, distinguishing features).
+2. Use the generate_image tool EXACTLY ONCE to create a single character portrait.
+   - Make the prompt extremely detailed (lighting, angle, clothing, expression, background).
 
-For each image prompt, be EXTREMELY detailed about:
-- Lighting, camera angle, art style
-- Specific clothing, accessories, colors
-- Facial features, expression, body language
-- Background context
+IMPORTANT: Call generate_image only ONCE. Do NOT generate multiple images.
 
-Output your character design as text, referencing the generated images.`,
+After generating the image, output your final character description as plain text.`,
     tools: [generateImageTool],
     outputKey: `character_${sanitizeAgentName(character.name)}`,
   });
