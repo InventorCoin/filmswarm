@@ -34,7 +34,7 @@ steps:
       - '--memory'
       - '1Gi'
       - '--timeout'
-      - '300'
+      - '900'
 
 images:
   - 'us-central1-docker.pkg.dev/$PROJECT_ID/filmswarm/server:$COMMIT_SHA'
