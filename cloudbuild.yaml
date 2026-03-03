@@ -1,0 +1,43 @@
+steps:
+  # Build the Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'us-central1-docker.pkg.dev/$PROJECT_ID/filmswarm/server:$COMMIT_SHA'
+      - '.'
+
+  # Push to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'us-central1-docker.pkg.dev/$PROJECT_ID/filmswarm/server:$COMMIT_SHA'
+
+  # Deploy to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'filmswarm'
+      - '--image'
+      - 'us-central1-docker.pkg.dev/$PROJECT_ID/filmswarm/server:$COMMIT_SHA'
+      - '--region'
+      - 'us-central1'
+      - '--platform'
+      - 'managed'
+      - '--allow-unauthenticated'
+      - '--set-env-vars'
+      - 'GOOGLE_CLOUD_PROJECT=$PROJECT_ID,GCS_BUCKET=filmswarm-images,NODE_ENV=production,CLIENT_URL=*'
+      - '--set-secrets'
+      - 'GOOGLE_API_KEY=filmswarm-gemini-key:latest'
+      - '--memory'
+      - '1Gi'
+      - '--timeout'
+      - '300'
+
+images:
+  - 'us-central1-docker.pkg.dev/$PROJECT_ID/filmswarm/server:$COMMIT_SHA'
+
+options:
+  logging: CLOUD_LOGGING_ONLY

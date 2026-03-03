@@ -5,18 +5,16 @@
     "rewrites": [
       {
         "source": "/api/**",
-        "function": "api"
+        "run": {
+          "serviceId": "filmswarm",
+          "region": "us-central1"
+        }
       },
       {
         "source": "**",
         "destination": "/index.html"
       }
     ]
-  },
-  "functions": {
-    "source": "server",
-    "runtime": "nodejs20",
-    "codebase": "filmswarm"
   },
   "firestore": {
     "rules": "firestore.rules",

@@ -6,7 +6,7 @@ const envSchema = z.object({
   GCS_BUCKET: z.string().min(1),
   PORT: z.coerce.number().default(3001),
   NODE_ENV: z.enum(['development', 'production']).default('development'),
-  CLIENT_URL: z.string().default('http://localhost:5173'),
+  CLIENT_URL: z.string().default('*'),
 });
 
 export type Env = z.infer<typeof envSchema>;
