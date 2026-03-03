@@ -2,6 +2,7 @@ import { useProjectStore } from './stores/project-store';
 import { useSSE } from './hooks/useSSE';
 import { ConceptInput } from './components/ConceptInput';
 import { SwarmMonitor } from './components/SwarmMonitor';
+import { PhaseIndicator } from './components/PhaseIndicator';
 import { RoundtableView } from './components/RoundtableView';
 import { CheckpointPrompt } from './components/CheckpointPrompt';
 import { OutputPanel } from './components/OutputPanel';
@@ -11,24 +12,38 @@ export default function App() {
   const projectId = useProjectStore((s) => s.projectId);
   const status = useProjectStore((s) => s.status);
   const error = useProjectStore((s) => s.error);
+  const reset = useProjectStore((s) => s.reset);
 
   useSSE(projectId);
 
   return (
     <div className="min-h-screen bg-swarm-bg p-4 md:p-8">
-      <div className="max-w-6xl mx-auto space-y-6">
+      <div className="max-w-7xl mx-auto space-y-6">
         {/* Header when running */}
         {status !== 'idle' && (
           <div className="flex items-center justify-between">
             <h1 className="text-2xl font-bold">
               <span className="text-swarm-accent">Film</span>Swarm
             </h1>
-            <ModeToggle />
+            <div className="flex items-center gap-3">
+              <ModeToggle />
+              {status === 'completed' && (
+                <button
+                  onClick={reset}
+                  className="px-3 py-1.5 text-xs border border-swarm-border rounded-lg text-swarm-muted hover:text-swarm-text hover:border-swarm-accent transition"
+                >
+                  New Project
+                </button>
+              )}
+            </div>
           </div>
         )}
 
         {/* Concept input (shown when idle) */}
         <ConceptInput />
+
+        {/* Phase progress */}
+        <PhaseIndicator />
 
         {/* Error */}
         {error && (

@@ -49,6 +49,9 @@ function handleEvent(event: any, store: ReturnType<typeof useProjectStore.getSta
 
     case 'agent_started':
       store.updateAgentStatus(event.agent, 'running');
+      if (event.agent === 'Director' && event.phase) {
+        store.setPhase(event.phase);
+      }
       break;
 
     case 'agent_thinking':

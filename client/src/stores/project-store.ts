@@ -48,6 +48,9 @@ interface ProjectState {
   images: GeneratedImage[];
   agentOutputs: { agent: string; text: string }[];
 
+  // Phase tracking
+  currentPhase: string;
+
   // Error
   error: string | null;
 
@@ -63,6 +66,7 @@ interface ProjectState {
   setCheckpoint: (cp: Checkpoint | null) => void;
   addImage: (img: GeneratedImage) => void;
   addAgentOutput: (agent: string, text: string) => void;
+  setPhase: (phase: string) => void;
   setError: (error: string | null) => void;
   reset: () => void;
 }
@@ -78,6 +82,7 @@ const initialState = {
   activeCheckpoint: null,
   images: [],
   agentOutputs: [],
+  currentPhase: '',
   error: null,
 };
 
@@ -113,6 +118,8 @@ export const useProjectStore = create<ProjectState>((set) => ({
 
   addAgentOutput: (agent, text) =>
     set((s) => ({ agentOutputs: [...s.agentOutputs, { agent, text }] })),
+
+  setPhase: (phase) => set({ currentPhase: phase }),
 
   setError: (error) => set({ error }),
 
