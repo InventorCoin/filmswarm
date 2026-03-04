@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useProjectStore } from '../stores/project-store';
+import { API_BASE } from '../config';
 
 export function CheckpointPrompt() {
   const checkpoint = useProjectStore((s) => s.activeCheckpoint);
@@ -12,7 +13,7 @@ export function CheckpointPrompt() {
   const resolve = async (decision: string) => {
     setResolving(true);
     try {
-      await fetch(`/api/interact/${projectId}/checkpoint`, {
+      await fetch(`${API_BASE}/api/interact/${projectId}/checkpoint`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ phase: checkpoint.phase, decision }),

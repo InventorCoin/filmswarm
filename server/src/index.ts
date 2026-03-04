@@ -11,7 +11,7 @@ import { interactRouter } from './routes/interact.js';
 const env = getEnv();
 const app = express();
 
-app.use(cors({ origin: env.CLIENT_URL, credentials: true }));
+app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
 
 app.get('/health', (_req, res) => {

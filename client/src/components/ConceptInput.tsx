@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useProjectStore, type InteractionMode } from '../stores/project-store';
+import { API_BASE } from '../config';
 
 const MODES: { value: InteractionMode; label: string; desc: string }[] = [
   { value: 'auto-pilot', label: 'Auto-pilot', desc: 'Agents run autonomously' },
@@ -20,7 +21,7 @@ export function ConceptInput() {
     setLoading(true);
 
     try {
-      const res = await fetch('/api/projects', {
+      const res = await fetch(`${API_BASE}/api/projects`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ concept: concept.trim(), mode }),

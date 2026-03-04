@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useProjectStore } from '../stores/project-store';
+import { API_BASE } from '../config';
 
 export function useSSE(projectId: string | null) {
   const esRef = useRef<EventSource | null>(null);
@@ -8,7 +9,7 @@ export function useSSE(projectId: string | null) {
   useEffect(() => {
     if (!projectId) return;
 
-    const es = new EventSource(`/api/stream/${projectId}`);
+    const es = new EventSource(`${API_BASE}/api/stream/${projectId}`);
     esRef.current = es;
 
     es.onmessage = (e) => {
